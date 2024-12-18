@@ -87,6 +87,6 @@
     "simple-git-hooks": "^2.11.1",
     "styled-components": "^6.1.13",
     "webext-bridge": "^5.0.0",
-    "webextension-polyfill": "^0.8.0"
+    "webextension-polyfill": "^0.12.0"
   }
 }
