@@ -44,7 +44,7 @@ export async function getManifest() {
     content_scripts: [
       {
         // matches: ['*://chatgpt.com/*', '*://knollapp.com/*', '*://api.knollapp.com/*', "*://localhost/*"],
-        matches: ['*://chatgpt.com/*', '*://personal-rm-ui.vercel.app/*', '*://api.knollapp.com/*'],
+        matches: ['*://chatgpt.com/*', '*://personal-rm-ui.vercel.app/*'],
         js: [
           'dist/contentScripts/index.global.js',
           'dist/contentScripts/config.js',

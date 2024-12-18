@@ -1,52 +1,72 @@
-import React, { useEffect, useState } from 'react';
-import { Typography, Box, Button } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import styled from 'styled-components';
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import React, { useState } from 'react';
+import CONSTANTS from '../../services/constants';
 
-// import GitHubIcon from '@mui/icons-material/GitHub';
+const HeaderContainer = styled.div`
+  margin-top: 20px;
+  padding-bottom: 10px;
+`;
 
+export default function Login(props: {
+  tried: boolean;
+  success: boolean;
+  failMsg: string;
+  onAttemptLogin: (email: string, password: string) => void;
+}) {
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
 
-export function Login() {
-    const openLogin = () => {
-        browser.runtime.sendMessage({
-            type: "sign_in",
-        })
-    }
-    const openSignup = () => {
-        browser.runtime.sendMessage({
-            type: "sign_up",
-        })
-    }
+  const handleLoginClick = () => {
+    props.onAttemptLogin(email, pass);
+  };
 
-    return (
-        <Box>
-            <Grid sx={{padding: "2em 0"}} container direction="column" justifyContent={"center"} alignItems={"center"}>
-                <Grid size={8}>
-                    <Typography sx={{textAlign: "center"}} variant="h4">
-                        Start using Knoll<br/>
-                        with ChatGPT.
-                    </Typography>
-                </Grid>
-                <Grid size={5}>
-                    <Button 
-                        sx={{borderRadius:"12px", marginTop: "2em",width: "100%"}}
-                        variant="contained"
-                        onClick={openSignup}
-                    >
-                        Join Now
-                    </Button>
-                </Grid>
-                <Grid size={5}>
-                    <Button 
-                        sx={{borderRadius:"12px", marginTop: "0.5em",width: "100%"}}
-                        variant="outlined"
-                        onClick={openLogin}
-                    >
-                        Login
-                    </Button>
-                </Grid>
-            </Grid>
-       </Box>
-    );
+  return (
+    <Container>
+      <HeaderContainer>
+        <h1>Please log in to link your account</h1>
+        <p>Don't have an account? <a href="https://personal-rm-ui.vercel.app/signup" target="_blank" rel="noreferrer">Signup</a></p>
+        <hr/>
+        <Container>
+          {props.success && props.tried ? 
+            <div style={{"textAlign":"center"}}>
+              <img src={`${CONSTANTS.URL}/spinning-loading.gif`} alt={"loading..."} style={{"width":"200px", "height":"150px"}}/>
+            </div> 
+          :
+            <Form>
+              <Form.Group className="mb-3" controlId="userEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control 
+                  type="email"
+                  placeholder="Enter email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                
+              </Form.Group>
 
+              <Form.Group className="mb-3" controlId="userPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control 
+                  type="password" 
+                  placeholder="Enter password" 
+                  value={pass}
+                  onChange={(e) => setPass(e.target.value)} 
+                />
+              </Form.Group>
 
+              <Button variant="primary" onClick={handleLoginClick}>
+                Login
+              </Button>
+              {props.tried && !props.success ? 
+                <p style={{"color":"red"}}>{props.failMsg}</p>
+              : null}
+            </Form>
+          }
+        </Container>
+      </HeaderContainer>
+    </Container>
+  );
 }
