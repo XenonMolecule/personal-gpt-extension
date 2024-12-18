@@ -39,12 +39,12 @@ export async function getManifest() {
     // host_permissions: ['*://chatgpt.com/*'],
     externally_connectable: {
       // matches: ["*://knollapp.com/*", "*://localhost/*"],
-      matches: ["*://knollapp.com/*"],
+      matches: ["*://personal-rm-ui.vercel.app/*"],
     }, 
     content_scripts: [
       {
         // matches: ['*://chatgpt.com/*', '*://knollapp.com/*', '*://api.knollapp.com/*', "*://localhost/*"],
-        matches: ['*://chatgpt.com/*', '*://knollapp.com/*', '*://api.knollapp.com/*'],
+        matches: ['*://chatgpt.com/*', '*://personal-rm-ui.vercel.app/*', '*://api.knollapp.com/*'],
         js: [
           'dist/contentScripts/index.global.js',
           'dist/contentScripts/config.js',
@@ -53,7 +53,6 @@ export async function getManifest() {
           'dist/contentScripts/libs/timeme.min.js',
           'dist/contentScripts/libs/utils.js',
           'dist/contentScripts/events.js',
-          'dist/contentScripts/logic.js',
           'dist/contentScripts/launcher.js',
         ],
         // css: ['public/main.css'],
