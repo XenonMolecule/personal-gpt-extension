@@ -10,66 +10,49 @@ export async function getManifest() {
   // update this file to update this manifest.json
   // can also be conditional based on your need
   const manifest: Manifest.WebExtensionManifest = {
-    manifest_version: 3,
-    name: pkg.displayName || pkg.name,
-    version: pkg.version,
-    description: pkg.description,
-    action: {
-      default_icon: './assets/logo.png',
-      default_popup: './dist/popup/index.html',
+    "manifest_version": 3,
+    "name": "PersonalGPT",
+    "version": "0.0.1",
+    "description": "Log your interactions with ChatGPT to build a personal AI model",
+    "action": {
+      "default_popup": "./dist/popup/index.html"
     },
-    options_ui: {
-      page: './dist/options/index.html',
-      open_in_tab: true,
+    "options_ui": {
+      "page": "./dist/options/index.html",
+      "open_in_tab": true
     },
-    background: isFirefox
-      ? {
-          scripts: ['dist/background/index.mjs'],
-          type: 'module',
-        }
-      : {
-          service_worker: './dist/background/index.mjs',
-        },
-    icons: {
-      16: './assets/logo.png',
-      48: './assets/logo.png',
-      128: './assets/logo.png',
+    "background": {
+      "service_worker": "dist/background/index.mjs",
+      "type": "module"
     },
-    permissions: ['storage'],
-    // host_permissions: ['*://chatgpt.com/*'],
-    externally_connectable: {
-      // matches: ["*://knollapp.com/*", "*://localhost/*"],
-      matches: ["*://personal-rm-ui.vercel.app/*"],
-    }, 
-    content_scripts: [
+    "icons": {
+      "16": "./assets/logo.png",
+      "48": "./assets/logo.png",
+      "128": "./assets/logo.png"
+    },
+    "permissions": ["storage", "activeTab"],
+    "host_permissions": ["*://chatgpt.com/*"],
+    "content_scripts": [
       {
-        // matches: ['*://chatgpt.com/*', '*://knollapp.com/*', '*://api.knollapp.com/*', "*://localhost/*"],
-        matches: ['*://chatgpt.com/*', '*://personal-rm-ui.vercel.app/*'],
-        js: [
-          'dist/contentScripts/index.global.js',
-          'dist/contentScripts/config.js',
-          'dist/contentScripts/libs/jquery.min.js',
-          'dist/contentScripts/libs/client.js',
-          'dist/contentScripts/libs/timeme.min.js',
-          'dist/contentScripts/libs/utils.js',
-          'dist/contentScripts/events.js',
-          'dist/contentScripts/launcher.js',
+        "matches": ["*://chatgpt.com/*"],
+        "js": [
+          "dist/contentScripts/libs/jquery.min.js", 
+          "dist/contentScripts/libs/utils.js",
+          "dist/contentScripts/events.js",
+          "dist/contentScripts/launcher.js",
+          "dist/contentScripts/bridge.js"
         ],
-        // css: ['public/main.css'],
-        run_at: 'document_start',
-      },
+        "run_at": "document_start"
+      }
     ],
-    web_accessible_resources: [
+    "web_accessible_resources": [
       {
-        resources: [
-          'dist/contentScripts/style.css',
-          'dist/contentScripts/injected.js',
-        ],
-        matches: ['<all_urls>'],
-      },
+        "resources": ["dist/contentScripts/injected.js"],
+        "matches": ["*://chatgpt.com/*"],
+      }
     ],
-    content_security_policy: {
-      extension_pages: isDev
+    "content_security_policy": {
+      "extension_pages": isDev
         ? // this is required on dev for Vite script to load
           `script-src \'self\' http://localhost:${port}; object-src \'self\'`
         : 'script-src \'self\'; object-src \'self\'',

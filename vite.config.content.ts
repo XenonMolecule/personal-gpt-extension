@@ -3,7 +3,7 @@ import { sharedConfig } from "./vite.config";
 import { r, isDev } from "./scripts/utils";
 import packageJson from "./package.json";
 
-// bundling the content script using Vite
+// This config now builds only one content script: injected.js
 export default defineConfig({
   ...sharedConfig,
   build: {
@@ -17,16 +17,18 @@ export default defineConfig({
     emptyOutDir: false,
     sourcemap: isDev ? "inline" : false,
     lib: {
-      entry: r("src/contentScripts/index.tsx"),
+      // Change entry to injected.js
+      entry: r("src/contentScripts/core/injected.js"),
       name: packageJson.name,
-      formats: ["iife"],
+      formats: ["iife"], // Keep iife for single file, no code splitting
     },
     rollupOptions: {
       output: {
-        entryFileNames: "index.global.js",
+        // Rename to injected.js to match our single content script
+        entryFileNames: "injected.js",
         extend: true,
       },
     },
   },
-  plugins: [...sharedConfig.plugins!],
+  plugins: [...(sharedConfig.plugins || [])],
 });

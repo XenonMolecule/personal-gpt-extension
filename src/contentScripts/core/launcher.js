@@ -1,50 +1,22 @@
-const eventsManager = new EventsManager()
-Globals.tab_id = uuidv4()
+// launcher.js (Content Script)
+// Use browser or fallback to chrome if not defined
+const _browser = (typeof browser !== 'undefined') ? browser : chrome;
 
-if (location.href.includes('chatgpt.com')) {
-  // We are on ChatGPT
-  chrome.storage.sync.get(['uid'], (items) => {
-    let user_id = items.uid
-    console.log('getting user info from local storge', items)
+console.log("Launcher script running...");
 
-    if (!user_id) {
-      run("")
-    }
-    else { run(user_id) }
-  })
-}
-else {
-  // We are on the hub server, nothing to do
-  console.log('Extension running...')
-}
-
-function passUserInfo() {
-  const userInfoEvent = new CustomEvent('setUserInfo',
-    {
-      detail: {
-        userId: Globals.user_id,
-        handle: Globals.user_handle,
-      },
-    })
-
-  window.dispatchEvent(userInfoEvent)
-}
-
-function run(user_id) {
-  Globals.user_id = user_id
-
-
-  eventsManager.run()
-  window.addEventListener('UrlChanged', eventsManager.onUrlChange, false)
-
-  ////////////////////////////////////////
-  // Inject the script in the page space
-  ////////////////////////////////////////
-  const s = document.createElement('script')
-  s.src = chrome.runtime.getURL('dist/contentScripts/injected.js')
-  s.onload = function () {
-    passUserInfo()
-    this.remove()
+function injectPageScript() {
+  const script = document.createElement("script");
+  script.src = _browser.runtime.getURL("dist/contentScripts/injected.js");
+  script.onload = function () {
+    console.log("Injected script loaded into the page context.");
+    this.remove();
   };
-  (document.head || document.documentElement).appendChild(s)
+  (document.head || document.documentElement).appendChild(script);
+}
+
+// If desired, you can do some checks before injecting
+if (location.href.includes("chatgpt.com")) {
+  injectPageScript();
+} else {
+  console.log("Not on ChatGPT domain, skipping injection.");
 }
