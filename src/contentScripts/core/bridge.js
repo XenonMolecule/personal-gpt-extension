@@ -1,5 +1,5 @@
 // bridge.js (Content Script)
-// const _browser = (typeof browser !== 'undefined') ? browser : chrome;
+const _browser = (typeof browser !== 'undefined') ? browser : chrome;
 
 console.log("Bridge script running, ready to relay messages.");
 

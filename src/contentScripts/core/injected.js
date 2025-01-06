@@ -13,6 +13,11 @@ console.log("Injected script (page context) loaded.");
   let currentConvId = null;
 
   async function finalizeAssistantResponse(assistantResponse) {
+
+    if (!currentConvId) {
+      currentConvId = window.location.pathname.split("/").pop();
+    }
+
     // Post data to content scripts
     window.postMessage({
       type: 'FINALIZE_ASSISTANT',
@@ -29,7 +34,8 @@ console.log("Injected script (page context) loaded.");
     if (options && options.method === "POST" && resource.includes("/conversation")) {
       const body = JSON.parse(options.body || "{}");
       currentUserMessage = body.messages?.find((m) => m.author.role === "user")?.content?.parts?.join("") || null;
-      currentConvId = body.conversation_id || null;
+
+      currentConvId = body.conversation_id || window.location.pathname.split("/").pop() || null;
 
       console.log("Fetch intercepted:", { currentUserMessage, currentConvId });
 
